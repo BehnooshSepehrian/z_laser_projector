@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""ROS node class which provides a collection of services that allows to operate and control the ZLP1 laser projector 
+"""ROS node class which provides a collection of services that allows to operate and control the ZLP1 laser projector
 and simplify the task of developing further advanced features."""
 
 import rospy
@@ -38,7 +38,7 @@ class ZLPProjectorROS(object):
     Args:
         projector_IP (str): IP number of projector device
         server_IP (str): IP number of service running at projector device
-        connection_port (int): connection port number 
+        connection_port (int): connection port number
         license_path (str): path of license file
 
     Attributes:
@@ -57,7 +57,7 @@ class ZLPProjectorROS(object):
         self.run_viz = False
 
         self.STD_WAIT_TIME = CoordinateSystemParameters().DEFAULT_SHOW_TIME
-        
+
         rospy.set_param('projector_connected', False)
 
     def open_services(self):
@@ -80,9 +80,9 @@ class ZLPProjectorROS(object):
         self.unhide_proj_elem = rospy.Service('unhide_projection_element', ProjectionElement, self.unhide_proj_elem_cb)
         self.remove_proj_elem = rospy.Service('remove_projection_element', ProjectionElement, self.remove_proj_elem_cb)
         self.monit_proj_elem  = rospy.Service('monitor_projection_element', ProjectionElement, self.keyboard_monitor_proj_elem_cb)
-        
+
         self.scan_pointer  = rospy.Service('scan_pointer', Trigger, self.scan_pointer_cb)
-        
+
         self.add_proj_elem   = rospy.Subscriber("add_projection_element", Figure, self.add_fig_cb)
         self.add_pointer     = rospy.Subscriber("add_pointer", Figure, self.add_pointer_cb)
 
@@ -102,22 +102,22 @@ class ZLPProjectorROS(object):
         """Callback of ROS service to connect to ZLP-Server, transfer license and activate projector.
 
         Args:
-            req (object): trigger request ROS service object 
+            req (object): trigger request ROS service object
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to connect projector.")
         try:
-            self.projector.client_server_connect()       
+            self.projector.client_server_connect()
             self.projector.load_license(self.lic_path)
             self.projector.activate()
             self.projector.geotree_operator_create()
             rospy.loginfo("Projector connected.")
             rospy.set_param('projector_connected', True)
             return TriggerResponse(True, "Projector connected.")
-        
+
         except Exception as e:
             rospy.logerr(e)
             return TriggerResponse(False, str(e))
@@ -126,10 +126,10 @@ class ZLPProjectorROS(object):
         """Callback of ROS service to deactivate projector and disconnect from ZLP-Server.
 
         Args:
-            req (object): trigger request ROS service object 
+            req (object): trigger request ROS service object
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to disconnect projector.")
@@ -149,10 +149,10 @@ class ZLPProjectorROS(object):
         (see :func:`set_coord_sys_cb`)
 
         Args:
-            req (object): trigger request ROS service object 
+            req (object): trigger request ROS service object
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to start projection")
@@ -170,15 +170,15 @@ class ZLPProjectorROS(object):
         except Exception as e:
             rospy.logerr(e)
             return TriggerResponse(False, str(e))
-    
+
     def projection_stop_cb(self, req):
         """Callback of ROS service to stop projection of all elements.
 
         Args:
-            req (object): trigger request ROS service object 
+            req (object): trigger request ROS service object
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to stop projection")
@@ -202,17 +202,17 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): object with the necessary parameters to define a new coordinate system
-            
+
         Returns:
             tuple[list, bool, str]: the first value in the returned tuple is a list of the user reference points T0, T1, T2, T3,
             the second is a bool success value and the third s an information message string
         """
         rospy.loginfo("Received request to create a new coordinate system manually. Please wait for the system to indicate the end.")
-        
+
         try:
             params = CoordinateSystemParameters.req_to_param(req)
             self.projector.define_coordinate_system(params, False)
-            
+
             self.set_rosparam_coordinate_system(params)
 
             cs = self.projector.get_coordinate_system_params(params.name)
@@ -226,7 +226,7 @@ class ZLPProjectorROS(object):
                 rospy.wait_for_service("/zlaser_viz/define_coordinate_system")
                 viz_manual_cs = rospy.ServiceProxy('/zlaser_viz/define_coordinate_system', CoordinateSystem)
                 viz_manual_cs(req)
-            
+
             rospy.loginfo("Projecting demonstration")
             self.projector.show_coordinate_system()
             rospy.sleep(self.STD_WAIT_TIME)
@@ -246,7 +246,7 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): object with the necessary parameters to define a new coordinate system by scanning targets
-            
+
         Returns:
             tuple[list, bool, str]: the first value in the returned tuple is a list of the user reference points T0, T1, T2, T3,
             the second is a bool success value and the third s an information message string
@@ -291,14 +291,14 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): ROS service CoordinateSystemList request object is empty
-        
+
         Returns:
-            tuple[bool, str, list, str]: the first value in the returned tuple is a bool success value, the second 
+            tuple[bool, str, list, str]: the first value in the returned tuple is a bool success value, the second
             is an information message string, the third is a list of the defined reference systems and the last is
             the name of the active reference system
         """
         rospy.loginfo("Received request to get the coordinate system list at projector")
-        
+
         cs_list = []
         try:
             cs_list,active_cs = self.projector.get_coordinate_systems_list()
@@ -310,16 +310,16 @@ class ZLPProjectorROS(object):
 
     def set_coord_sys_cb(self, req):
         """Callback of ROS service to set the indicated reference system as 'active reference system'.
-        It means that services as projection_start or show_active_coordinate_system, etc. automatically use this 
+        It means that services as projection_start or show_active_coordinate_system, etc. automatically use this
         active reference system to perform their task.
         The rest of coordinate systems are defined and stored in the projector, staying on background until
         any is set as active again.
 
         Args:
             req (object): object with the necessary parameters to identify a coordinate system
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to set coordinate system.")
@@ -337,9 +337,9 @@ class ZLPProjectorROS(object):
                 rospy.wait_for_service("/zlaser_viz/set_coordinate_system")
                 viz_set_cs = rospy.ServiceProxy('/zlaser_viz/set_coordinate_system', CoordinateSystemName)
                 viz_set_cs(req)
-            
+
             return CoordinateSystemNameResponse(True,"Set coordinate system")
-                    
+
         except Exception as e:
             rospy.logerr(e)
             return CoordinateSystemNameResponse(False,str(e))
@@ -349,9 +349,9 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): object with the necessary parameters to identify a reference system
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Request to project active coordinate system.")
@@ -374,7 +374,7 @@ class ZLPProjectorROS(object):
             self.projector.hide_frame()
 
             return CoordinateSystemShowResponse(True,"Coordinate system showed")
-        
+
         except Exception as e:
             rospy.logerr(e)
             return CoordinateSystemShowResponse(False,str(e))
@@ -384,15 +384,15 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): object with the necessary parameters to identify a reference system
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to remove coordinate system")
         if not req.name:
             return CoordinateSystemNameResponse(False,"Please, specify name")
-        
+
         try:
             active_cs = self.projector.remove_coordinate_system(req.name)
 
@@ -406,7 +406,7 @@ class ZLPProjectorROS(object):
                 viz_rem_cs(req)
 
             return CoordinateSystemNameResponse(True,"Coordinate system removed")
-        
+
         except Exception as e:
             rospy.logerr(e)
             return CoordinateSystemNameResponse(False,str(e))
@@ -438,7 +438,7 @@ class ZLPProjectorROS(object):
                     rospy.logerr("Figure type does not exist.")
 
                 rospy.loginfo("Figure added correctly.")
-            
+
             except Exception as e:
                 rospy.logerr(e)
 
@@ -447,17 +447,17 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): object with the necessary parameters to identify a projection element
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to hide figure.")
 
-        if not req.projection_group or not req.figure_name:
-            return ProjectionElementResponse(False,"group_name or figure_name request is empty")
+        if not req.projection_group and not req.figure_name:
+            return ProjectionElementResponse(False,"group_name and figure_name request is empty")
 
-        try:        
+        try:
             self.projector.hide_proj_elem(req)
 
             # Send info to viz
@@ -477,17 +477,17 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): object with the necessary parameters to identify a projection element
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to unhide figure.")
 
-        if not req.projection_group or not req.figure_name:
+        if not req.projection_group and not req.figure_name:
             return ProjectionElementResponse(False,"group_name or figure_name request is empty")
 
-        try:        
+        try:
             self.projector.unhide_proj_elem(req)
 
             # Send info to viz
@@ -507,9 +507,9 @@ class ZLPProjectorROS(object):
 
         Args:
             req (object): object with the necessary parameters to identify a projection element
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to remove figure.")
@@ -517,7 +517,7 @@ class ZLPProjectorROS(object):
         if not req.projection_group or not req.figure_name:
             return ProjectionElementResponse(False,"group_name or figure_name request is empty")
 
-        try:        
+        try:
             self.projector.remove_proj_elem(req)
 
             # Send info to viz
@@ -533,27 +533,27 @@ class ZLPProjectorROS(object):
             return ProjectionElementResponse(False,str(e))
 
     def keyboard_monitor_proj_elem_cb(self, req):
-        """Callback of ROS service to apply different transformations (translation, rotation, scalation) 
+        """Callback of ROS service to apply different transformations (translation, rotation, scalation)
         to a specific projection element on real time by the use of keyboard.
 
         Args:
             req (object): object with the necessary parameters to identify a projection element
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to monitor figure. PRESS PRESS 'ESC' TO FINISH MONITORING.")
 
         if not req.projection_group or not req.figure_name:
             return ProjectionElementResponse(False,"group_name or figure_name request is empty")
-        
+
         try:
             # Send info to viz
             if self.run_viz:
                 proj_elem = self.projector.get_proj_elem(req)
                 figure = proj_elem.to_figure()
-                
+
                 if self.viz_monitor_fig.get_num_connections() < 1:
                     return ProjectionElementResponse(False,"No subscribers")
 
@@ -562,7 +562,7 @@ class ZLPProjectorROS(object):
             self.projector.monitor_proj_elem(req)
             rospy.loginfo("Monitoring ENDED.")
             return ProjectionElementResponse(True,"Figure monitored")
-        
+
         except Exception as e:
             rospy.logerr(e)
             return ProjectionElementResponse(False,str(e))
@@ -582,7 +582,7 @@ class ZLPProjectorROS(object):
                 try:
                     self.projector.create_pointer(msg)
                     rospy.loginfo("Pointer added correctly.")
-                
+
                 except Exception as e:
                     rospy.logerr(e)
         else:
@@ -594,7 +594,7 @@ class ZLPProjectorROS(object):
 
         Args:
             name (str): name of the pointer that changed state
-            reflection (bool): true if a reflection was detected; False otherwise 
+            reflection (bool): true if a reflection was detected; False otherwise
         """
         rospy.loginfo("On pointer_cb_example. Detected pointer: %s", name)
         self.projector.stop_projection()
@@ -603,19 +603,19 @@ class ZLPProjectorROS(object):
         """Callback of ROS service to start pointers scanning.
 
         Args:
-            req (object): trigger request ROS service object 
+            req (object): trigger request ROS service object
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         rospy.loginfo("Received request to scan pointer.")
-        
+
         try:
             self.projector.scan_pointer(self.pointer_cb_example)
             rospy.loginfo("Pointer scanning is active.")
             return TriggerResponse(True, "Pointer scanning is active.")
-        
+
         except Exception as e:
             rospy.logerr(e)
             return TriggerResponse(False, str(e))
@@ -634,7 +634,7 @@ class ZLPProjectorROS(object):
         rospy.set_param('T0/x', cs_params.T[0].x)
         rospy.set_param('T0/y', cs_params.T[0].y)
         rospy.set_param('coordinate_system_resolution', cs_params.resolution)
-        
+
     def read_rosparam_coordinate_system(self):
         """Get parameters of the active reference system from rosparams.
 
@@ -659,7 +659,7 @@ class ZLPProjectorROS(object):
 
     def setup_projector(self):
         """Setup projector at initialization (connect to ZLP-Service, transfer license file and activate projector).
- 
+
         Returns:
             bool: success value. True if success, False otherwise.
         """
@@ -669,7 +669,7 @@ class ZLPProjectorROS(object):
             rospy.loginfo("Projector connected.")
             rospy.set_param('projector_connected', True)
             return False
-        
+
         except Exception as e:
             rospy.logerr(e)
             return True
@@ -679,7 +679,7 @@ class ZLPProjectorROS(object):
         params = self.read_rosparam_coordinate_system()
         try:
             self.projector.define_coordinate_system(params, False)
-            
+
             cs = self.projector.get_coordinate_system_params(params.name)
             self.projector.cs_frame_create(cs)
             self.projector.cs_axes_create(cs)
@@ -707,9 +707,9 @@ class ZLPProjectorROS(object):
 
     def shutdown_handler(self):
         """Handler to close connection when node exits.
- 
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple
             is an information message string
         """
         try:
