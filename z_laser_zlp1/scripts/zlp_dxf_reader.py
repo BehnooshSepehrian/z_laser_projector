@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Copyright (c) 2021, FADA-CATEC
-
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -28,9 +27,14 @@ if __name__ == '__main__':
 
     # get dxf file path
     dxf_file_name = rospy.get_param(node_name + '/dxf_file', default="dxf_test")
-    rospack = rospkg.RosPack()
-    pkg_path = rospack.get_path('z_laser_zlp1')
-    dxf_file = pkg_path + "/dxf/" + dxf_file_name + ".dxf"
+    directory_path = rospy.get_param(node_name + '/directory_path', default="")
+
+    if directory_path == ""  :
+        rospack = rospkg.RosPack()
+        pkg_path = rospack.get_path('z_laser_zlp1')
+        directory_path = pkg_path
+
+    dxf_file = directory_path + "/dxf/" + dxf_file_name + ".dxf"
 
     # create publisher
     pub = rospy.Publisher('add_projection_element', Figure, queue_size=10)
@@ -45,17 +49,16 @@ if __name__ == '__main__':
         msp = doc.modelspace()
 
         for i, elem in enumerate(msp):
-            
             proj_elem_params = zlp_dxf.get_params(elem, dxf_file_name, elem.dxftype(), i)
-            rospy.loginfo("[%s] loaded figure" % elem.dxftype()) 
-
-            pub.publish(proj_elem_params)
+            rospy.loginfo("[%s] loaded figure" % elem.dxftype())
+            if proj_elem_params:
+                pub.publish(proj_elem_params)
 
     except TypeError as e:
         rospy.logwarn(e)
 
     except IOError as e:
-        rospy.logerr(e) 
+        rospy.logerr(e)
 
     except ezdxf.DXFStructureError as e:
-        rospy.logerr(e) 
+        rospy.logerr(e)

@@ -23,21 +23,24 @@ if __name__ == '__main__':
     node_name = 'zlp_node'
     rospy.init_node(node_name)
 
-    projector_IP    = rospy.get_param('projector_IP', "192.168.10.10") 
-    server_IP       = rospy.get_param('server_IP', "192.168.10.11") 
-    connection_port = rospy.get_param('connection_port', 9090) 
-    license_file    = rospy.get_param('license_file', "my_license_file.lic") 
+    projector_IP    = rospy.get_param('projector_IP', "192.168.10.10")
+    server_IP       = rospy.get_param('server_IP', "192.168.10.11")
+    connection_port = rospy.get_param('connection_port', 9090)
+    license_file    = rospy.get_param('license_file', "my_license_file.lic")
+
 
     # define license file path
     rospack = rospkg.RosPack()
     pkg_path = rospack.get_path('z_laser_zlp1')
-    license_path = pkg_path + "/lic/" + license_file
+    license_dir     = rospy.get_param('license_dir', pkg_path + "/lic/")
+    license_path = license_dir + license_file
+    rospy.loginfo("license path: %s",license_path)
 
     # create node instance
     zlp_node = ZLPProjectorROS(projector_IP, server_IP, connection_port, license_path)
 
     # set run viz
-    use_viz = rospy.get_param(node_name + '/using_visualizer', False) 
+    use_viz = rospy.get_param(node_name + '/using_visualizer', False)
     zlp_node.set_viz_run(use_viz)
 
     # connect, load license and activate projector

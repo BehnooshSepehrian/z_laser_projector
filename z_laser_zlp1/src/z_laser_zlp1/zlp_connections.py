@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Helper module for python thrift interface to ZLP Service. 
-This module contains utility classes and methods which ease the usage of the thrift interface to 
+"""Helper module for python thrift interface to ZLP Service.
+This module contains utility classes and methods which ease the usage of the thrift interface to
 communicate with the ZLP Service."""
 
 import os
@@ -21,7 +21,7 @@ import sys
 import time
 import socket
 import copy
-import threading 
+import threading
 
 import thriftpy
 from thriftpy.protocol import TBinaryProtocolFactory
@@ -51,16 +51,16 @@ class EventChannelInterfaceHandler(object):
 
     def PropertyChanged(self, name, value):
         """Set callback function to handle settings changes on laser projector system.
-    
+
         Args:
             name (str): full path of property that was changed
-            value (int): value of property 
+            value (int): value of property
         """
         self.property_changed_callback(name, value)
 
     def GeoTreeChanged(self, changed_flags, element_names):
         """Set callback function to handle changes on geotree operator.
-    
+
         Args:
             changed_flags (int): integer value with flags of type GeoTreeChangedFlags
             element_names (enum): identification of changed element (within the GeoTreeElemId enumeration )
@@ -69,16 +69,16 @@ class EventChannelInterfaceHandler(object):
 
     def ServiceStateChanged(self, oldState, newState):
         """Set callback function to handle changes on services state.
-    
+
         Args:
-            oldState (enum): old state (within the ServiceStates enumeration) before change 
-            newState (enum): new state (within the ServiceStates enumeration) after change 
+            oldState (enum): old state (within the ServiceStates enumeration) before change
+            newState (enum): new state (within the ServiceStates enumeration) after change
         """
         self.service_state_changed_callback(oldState, newState)
 
     def FunctionModuleStateChanged(self, functionModID, oldState, newState):
         """Set callback function to handle changes on function module state.
-    
+
         Args:
             functionModID (str): identificator name of function module
             oldState (enum): old state (within the FunctionModuleStates enumeration) before change
@@ -88,10 +88,10 @@ class EventChannelInterfaceHandler(object):
 
     def RemoteControlFrameReceived(self, rc_id, command, toggle, projector, timestamp):
         """Set callback function to handle remote control commands reception.
-    
+
         Args:
-            rc_id (str): address of RC-device 
-            command (enum): enum with command codes for remotecontrol functions 
+            rc_id (str): address of RC-device
+            command (enum): enum with command codes for remotecontrol functions
             toggle (bool): toggle function active
             projector (str): serial number of the projector
             timestamp (int): timestamp
@@ -100,21 +100,21 @@ class EventChannelInterfaceHandler(object):
 
     def onReflectionStateChanged(self, elementName, state):
         """Set callback function to handle changes on reflection state.
-    
+
         Args:
-            elementName (str): name of the element that changed state 
+            elementName (str): name of the element that changed state
             state (bool): true if a reflection was detected; False otherwise
         """
         self.on_reflection_state_changed_callback(elementName, state)
 
 class ThriftClient(TClient):
     """This class implement the functions to carry out the connection with the ZLP Service.
-    
+
     Args:
         event_handler (object): object with functions of ClientEventChannel thrift interface
 
     Attributes:
-        thrift_interface (obj): load the interface description file (interface.thrift) for the communication between 
+        thrift_interface (obj): load the interface description file (interface.thrift) for the communication between
         ZLP-Service and a remote client
     """
     def __init__(self, event_handler=EventChannelInterfaceHandler()):
@@ -127,7 +127,7 @@ class ThriftClient(TClient):
 
     def init_client(self, ip, port):
         """Establish a connection to thrift server of ZLP Service. Init client opening sockets and init events handler.
-            
+
         Args:
             ip (str): ipv6 network address of ZLP-Service
             port (str): port number on which ZLP-Service listens for requests
@@ -143,7 +143,7 @@ class ThriftClient(TClient):
         if self._event_channel_handler and not self._event_channel:
             processor = TProcessor(self.thrift_interface.ClientEventChannel, self._event_channel_handler)
             server_socket = TServerSocket(host="0.0.0.0", port=0, socket_family=socket.AF_INET, client_timeout=200000)
-            server_socket.client_timeout = 1000*60*10 
+            server_socket.client_timeout = 1000*60*10
             self._event_channel = TSimpleServer(processor, server_socket)
 
             t = threading.Thread(target=self._event_channel.serve, daemon=True)
@@ -155,7 +155,7 @@ class ThriftClient(TClient):
 
     def set_property_changed_callback(self, callback):
         """Set callback function related with laser projector settings changes.
-            
+
         Args:
             callback (object): callback function to set
 
@@ -169,7 +169,7 @@ class ThriftClient(TClient):
 
     def set_geotree_changed_callback(self, callback):
         """Set callback function related with geotree operator changes.
-            
+
         Args:
             callback (object): callback function to set
 
@@ -183,7 +183,7 @@ class ThriftClient(TClient):
 
     def set_function_module_state_changed_callback(self, callback):
         """Set callback function related with function module state changes.
-            
+
         Args:
             callback (object): callback function to set
 
@@ -197,7 +197,7 @@ class ThriftClient(TClient):
 
     def set_rc_command_received_callback(self, callback):
         """Set callback function related with remote control commands reception.
-            
+
         Args:
             callback (object): callback function to set
 
@@ -211,7 +211,7 @@ class ThriftClient(TClient):
 
     def set_reflection_state_changed_callback(self, callback):
         """Set callback function related with reflection state changes.
-            
+
         Args:
             callback (object): callback function to set
 
@@ -241,18 +241,18 @@ class ProjectorClient(object):
 
     def get_thrift_client(self):
         """Return the object generated to communicate with the projector.
-            
+
         Returns:
             object: thrift client object generated to communicate with the projector
         """
         try:
             return self.__thrift_client
-        
+
         except Exception as e:
             return e
 
     def connect(self,server_IP,connection_port):
-        """Create and connect the client to thrift server (located at projector) of ZLP-Service and establish an event channel if 
+        """Create and connect the client to thrift server (located at projector) of ZLP-Service and establish an event channel if
         needed.
 
         Args:
@@ -260,36 +260,36 @@ class ProjectorClient(object):
             connection_port (str): port number on which ZLP-Service listens for requests
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
             if not self.__thrift_client._event_channel:
                 self.__thrift_client.init_client(server_IP, connection_port)
                 self.__thrift_client.init_event_channel()
-                success = True 
+                success = True
                 message = "Client connected"
             else:
-                success = False 
+                success = False
                 message = "Projector already connected"
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
-    
+
         return success,message
 
     def disconnect(self):
         """Disconnect from ZLP Service thrift server and close own event server.
-        
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
-        try: 
-            self.__thrift_client.RemoveGeoTreeElem("") 
+        try:
+            self.__thrift_client.RemoveGeoTreeElem("")
             self.__thrift_client.FunctionModuleRelease(self.module_id)
-            
+
             self.__thrift_client.DisconnectClientEventChannel()
             self.__thrift_client.close()
 
@@ -297,11 +297,11 @@ class ProjectorClient(object):
                 self.__thrift_client._event_channel.close()
                 self.__thrift_client._event_channel = None
 
-            success = True 
+            success = True
             message = "Projector disconnected"
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -316,21 +316,23 @@ class ProjectorClient(object):
 
     def transfer_license(self, lic_path):
         """Transfer data of the local license file to remote file at ZLP-Service.
-        
+
         Args:
             lic_path (str): license file path
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
             license_path = os.path.abspath(lic_path)
             license_file = os.path.basename(license_path)
             content = open(license_path, 'r').read()
-            self.__thrift_client.TransferDataToFile(content, license_file, True)
+            self.__thrift_client.writeFile(content, license_file)
+#            self.__thrift_client.TransferDataToFile(content, license_file, True)
 
-            self.__thrift_client.LoadLicense(license_file)
+#            self.__thrift_client.LoadLicense(license_file)
+            self.__thrift_client.loadLicense(license_file)
 
             success = True
             message = "License transfered."
@@ -338,7 +340,7 @@ class ProjectorClient(object):
         except self.__thrift_client.thrift_interface.CantWriteFile as e:
             success = False
             message = e
-        
+
         except FileNotFoundError as e:
             success = False
             message = e
@@ -353,16 +355,16 @@ class ProjectorClient(object):
         """Check if license is valid.
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
-            success = self.__thrift_client.CheckLicense()
+            success = self.__thrift_client.checkLicense()
             if success:
                 message = "License is valid"
             else:
                 message = "License is not valid"
-        
+
         except Exception as e:
             success = False
             message = e
@@ -376,7 +378,7 @@ class ProjectorClient(object):
             scan_addresses (str): addresses or address to scan
 
         Returns:
-            tuple[list, bool, str]: the first value in the returned tuple is a list of serial numbers of the projectors found, 
+            tuple[list, bool, str]: the first value in the returned tuple is a list of serial numbers of the projectors found,
             the second a bool success value and the third value in the tuple is an information message string
         """
         try:
@@ -385,10 +387,10 @@ class ProjectorClient(object):
             self.__thrift_client.SetProperty("config.projectorManager.cmdGetProjectors", "1")
             serial_list = self.__thrift_client.GetProperty("config.projectorManager.cmdGetProjectors.result.entries")
             self.__thrift_client.SetProperty("config.projectorManager.cmdGetProjectors.scan", "0")
-            
+
             if serial_list:
                 serial_list = serial_list.split(" ")
-                success = True 
+                success = True
                 message = ""
             else:
                 serial_list = []
@@ -401,13 +403,13 @@ class ProjectorClient(object):
             message = e
 
         return serial_list,success,message
-    
+
     def property_changed_callback(self, prop, value):
         """Callback function related with laser projector settings changes.
-        
+
         Args:
             prop (str): full path of property that was changed
-            value (int): value of property 
+            value (int): value of property
         """
         self.cv.acquire()
         self.cv.notify()
@@ -415,7 +417,7 @@ class ProjectorClient(object):
 
     def activate_projector(self,projector_IP):
         """Set properties to activate a projector.
-        
+
         Args:
             projector_IP (str): address of the projector to scan
 
@@ -427,28 +429,29 @@ class ProjectorClient(object):
             projectors, success, message = self.scan_projectors(projector_IP)
             if success:
                 self.__thrift_client.set_property_changed_callback(self.property_changed_callback)
-                self.__thrift_client.RegisterForChangedProperty("config.licenseState.IsValid")
+#                self.__thrift_client.RegisterForChangedProperty("config.licenseState.IsValid")
 
                 self.cv.acquire()
                 self.projector_id = projectors[0]
                 self.__thrift_client.SetProperty("config.projectorManager.cmdActivateProjector.serial", self.projector_id)
                 self.__thrift_client.SetProperty("config.projectorManager.cmdActivateProjector.active", "1")
                 self.__thrift_client.SetProperty("config.projectorManager.cmdActivateProjector", "1")
-                self.cv.wait()
+##############TODO:: The event handlere should be somehow mangard to use this wait function########
+#                self.cv.wait()
                 self.cv.release()
                 message = "Projector activated"
-        
+
         except Exception as e:
-            success = False 
+            success = False
             message = e
-        
+
         return self.projector_id,success,message
 
     def deactivate_projector(self):
         """Set properties to deactivate a projector.
-        
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -460,11 +463,11 @@ class ProjectorClient(object):
             self.__thrift_client.SetProperty("config.projectorManager.cmdActivateProjector.active", "0")
             self.__thrift_client.SetProperty("config.projectorManager.cmdActivateProjector", "1")
 
-            success = True 
+            success = True
             message = "Projector deactivated:" + self.projector_id
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -473,7 +476,7 @@ class ProjectorClient(object):
         """Create function module to operate with GeoTreeElements (coordinate systems and projection elements).
 
         Returns:
-            tuple[str, bool, str]: the first value in the returned tuple is the function module identification name string, 
+            tuple[str, bool, str]: the first value in the returned tuple is the function module identification name string,
             the second is a bool success value and the third value in the tuple is an information message string
         """
         try:
@@ -484,17 +487,17 @@ class ProjectorClient(object):
         except Exception as e:
             success = False
             message = e
-        
+
         return self.module_id,success,message
 
     def start_project(self, cs_name):
         """Start projection on the surface of all projection elements that belong to the active coordinate system.
-            
+
         Args:
             cs_name (str): name of the active coordinate system
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -511,44 +514,42 @@ class ProjectorClient(object):
                 message = "Nothing to project"
 
             else:
-                self.__thrift_client.TriggerProjection()
+                self.__thrift_client.updateProjection()
                 success = True
                 message = "Projecting elements from [" + cs_name + "] coordinate system."
-        
+
         except Exception as e:
             success = False
             message = e
-        
+
         return success,message
 
-    def stop_project(self): 
+    def stop_project(self):
         """Stop projection of all elements.
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
-            projector_property_path = "config.projectorManager.projectors." + self.projector_id
-            self.__thrift_client.SetProperty(projector_property_path + ".cmdShowProjection.show", "0")
-            self.__thrift_client.SetProperty(projector_property_path + ".cmdShowProjection", "1")
+            self.__thrift_client.stopProjection()
             success = True
             message = "Projection stopped"
-        
+
         except Exception as e:
             success = False
             message = e
-        
+
         return success,message
 
-    def update_project(self,cs_name): 
+    def update_project(self,cs_name):
         """Update changes on figures projected (restart projection).
 
         Args:
             cs_name (str): name of the coordinate system to update
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -556,7 +557,7 @@ class ProjectorClient(object):
             self.start_project(cs_name)
             success = True
             message = "Projection updated."
-        
+
         except Exception as e:
             success = False
             message = e
@@ -578,16 +579,16 @@ class ProjectorClient(object):
             # elemType = 1024, 1025, 1026, 1027 refers to projection element identificator at the projector device
             matches = [elem.name for elem in geo_tree_list if elem.elemType in (1024,1025,1026,1027)]
             proj_elems = [self.__thrift_client.GetProjectionElement(name) for name in matches]
-            
+
             for proj_elem in proj_elems:
                 if proj_elem.activated == True and proj_elem.coordinateSystemList[0] == cs_name:
                     proj_elems_actives = proj_elem
 
             if not proj_elems_actives:
-                is_empty = True 
-        
+                is_empty = True
+
         except Exception:
-            is_empty = True 
+            is_empty = True
 
         return is_empty
 
@@ -597,7 +598,7 @@ class ProjectorClient(object):
 
         Args:
             name (str): name of the pointer that changed state
-            reflection (bool): true if a reflection was detected; False otherwise 
+            reflection (bool): true if a reflection was detected; False otherwise
         """
         self.stop_project()
 
@@ -605,21 +606,21 @@ class ProjectorClient(object):
         """Set callback for reflection state change.
 
         Args:
-            reflection_callback (object): callback function 
+            reflection_callback (object): callback function
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
             if reflection_callback is None:
                 # use default
                 reflection_callback = self.on_reflection_change
-                
+
             self.__thrift_client.set_reflection_state_changed_callback(reflection_callback)
             success = True
             message = "Reflection callback set."
-        
+
         except Exception as e:
             success = False
             message = e

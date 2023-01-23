@@ -25,7 +25,7 @@ from z_laser_zlp1.zlp_utils import ProjectionElementParameters, GeometryTool
 
 class ProjectionElement(object):
     """This class implement the functions related with projection elements.
-    
+
     Args:
         module_id (str): function module identification name
         thrift_client (object): object with the generated client to communicate with the projector
@@ -55,7 +55,7 @@ class ProjectionElement(object):
 
         Args:
             elem (object): projection element object to initialize
-            
+
         Returns:
             object: projection element object with fields initialized
         """
@@ -68,10 +68,10 @@ class ProjectionElement(object):
 
     def create_polyline(self, name):
         """Create and initialize a new polyline object.
-            
+
         Args:
             name (str): polyline name
-        
+
         Returns:
             object: polyline struct with fields initialized
         """
@@ -87,9 +87,9 @@ class ProjectionElement(object):
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
             proj_elem_params (object): object with the parameters to identify and define a line as a new projection element
-                
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -106,19 +106,19 @@ class ProjectionElement(object):
 
             linestring = [ self.__geometry_tool.create_3d_point(x, y),
                            self.__geometry_tool.create_3d_point(x+length*cos(angle*pi/180), y+length*sin(angle*pi/180))]
-            
+
             polyline.polylineList = [linestring]
             polyline.activated = True
             polyline.detectReflection = reflection
             polyline.coordinateSystemList = [cs_name]
-        
+
             self.__thrift_client.SetPolyLine(polyline)
-            
+
             success = True
             message = polyline_name + " polyline created at [" + cs_name + "] coordinate system."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -129,18 +129,18 @@ class ProjectionElement(object):
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
             proj_elem_params (object): object with the parameters to identify and define an arrow as a new projection element
-                
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
             group = proj_elem_params.projection_group
             id    = proj_elem_params.figure_name
-            
+
             arrow_name = group + "/polyline/" + id
             arrow = self.create_polyline(arrow_name)
-            
+
             angle = proj_elem_params.angle[0]
             length = proj_elem_params.size[0]
 
@@ -149,35 +149,35 @@ class ProjectionElement(object):
 
             x2 = x1 + length*cos(radians(angle))
             y2 = y1 + length*sin(radians(angle))
-            
+
             angle += 160
             x3 = x2 + length/4*cos(radians(angle))
             y3 = y2 + length/4*sin(radians(angle))
-            
+
             angle += 40
             x4 = x2 + length/4*cos(radians(angle))
             y4 = y2 + length/4*sin(radians(angle))
-            
+
             linestring = [ self.__geometry_tool.create_3d_point(x1, y1),
                            self.__geometry_tool.create_3d_point(x2, y2),
                            self.__geometry_tool.create_3d_point(x3, y3),
                            self.__geometry_tool.create_3d_point(x4, y4),
                            self.__geometry_tool.create_3d_point(x2, y2)]
-            
+
             arrow.polylineList = [linestring]
             arrow.activated = True
             arrow.detectReflection = reflection
             arrow.coordinateSystemList = [cs_name]
-            
+
             self.__thrift_client.SetPolyLine(arrow)
-            
+
             success = True
             message = arrow_name + " arrow created at [" + cs_name + "] coordinate system."
-        
+
         except Exception as e:
             success = False
             message = e
-        
+
         return success,message
 
     def define_rectangle(self, cs_name, proj_elem_params, points, reflection=False):
@@ -186,10 +186,10 @@ class ProjectionElement(object):
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
             proj_elem_params (object): object with the parameters to identify and define a rectangle as a new projection element
-            points (list): 4 points list of rectangle corners 
-                
+            points (list): 4 points list of rectangle corners
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -202,29 +202,29 @@ class ProjectionElement(object):
             linestring = []
             for i in [0, 1, 2, 3, 0]:
                 linestring.append(self.__geometry_tool.create_3d_point(points[i].x, points[i].y))
-                            
+
             rectangle.polylineList = [linestring]
             rectangle.activated = True
             rectangle.detectReflection = reflection
             rectangle.coordinateSystemList = [cs_name]
-            
+
             self.__thrift_client.SetPolyLine(rectangle)
-            
+
             success = True
             message = rectangle_name + " rectangle created at [" + cs_name + "] coordinate system."
-        
+
         except Exception as e:
             success = False
             message = e
-        
+
         return success,message
-        
+
     def create_curve(self, name, curve_type):
         """Create and initialize a new curve (circle, arc or oval) object.
-            
+
         Args:
             name (str): curve name
-        
+
         Returns:
             curve (object): curve object with fields initialized
         """
@@ -241,11 +241,11 @@ class ProjectionElement(object):
 
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
-            proj_elem_params (object): object with the necessary parameters to identify and define a circle as a 
+            proj_elem_params (object): object with the necessary parameters to identify and define a circle as a
             new projection element
-                
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -265,12 +265,12 @@ class ProjectionElement(object):
             circle.coordinateSystemList = [cs_name]
 
             self.__thrift_client.SetCircleSegment(circle)
-            
+
             success = True
             message = circle_name + " circle created at [" + cs_name + "] coordinate system."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -280,11 +280,11 @@ class ProjectionElement(object):
 
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
-            proj_elem_params (object): object with the necessary parameters to identify and define an arc as a 
+            proj_elem_params (object): object with the necessary parameters to identify and define an arc as a
             new projection figure
-                
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -308,12 +308,12 @@ class ProjectionElement(object):
             arc.coordinateSystemList = [cs_name]
 
             self.__thrift_client.SetCircleSegment(arc)
-            
+
             success = True
             message = arc_name + " arc created at [" + cs_name + "] coordinate system."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -323,11 +323,11 @@ class ProjectionElement(object):
 
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
-            proj_elem_params (object): object with the necessary parameters to identify and define an oval as a 
+            proj_elem_params (object): object with the necessary parameters to identify and define an oval as a
             new projection figure
-                
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -351,22 +351,22 @@ class ProjectionElement(object):
             oval.coordinateSystemList = [cs_name]
 
             self.__thrift_client.SetOvalSegment(oval)
-            
+
             success = True
             message = oval_name + " oval created at [" + cs_name + "] coordinate system."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
 
     def create_text(self, name):
         """Create and initialize a new text object.
-            
+
         Args:
             name (str): text object name
-        
+
         Returns:
             text (object): text object with fields initialized
         """
@@ -380,11 +380,11 @@ class ProjectionElement(object):
 
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
-            proj_elem_params (object): object with the necessary parameters to identify and define a text as a 
+            proj_elem_params (object): object with the necessary parameters to identify and define a text as a
             new projection figure
-                
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -410,12 +410,12 @@ class ProjectionElement(object):
             text.coordinateSystemList = [cs_name]
 
             self.__thrift_client.SetTextElement(text)
-            
+
             success = True
             message = text_name + " text created at [" + cs_name + "] coordinate system."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -434,7 +434,7 @@ class ProjectionElement(object):
             figure_type = params.figure_type
             group       = params.projection_group
             id          = params.figure_name
-            
+
             name = group + self.figures_list[figure_type] + id
 
             proj_elem = ProjectionElementParameters()
@@ -464,12 +464,12 @@ class ProjectionElement(object):
                 message = "Projection element get error."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
             figure = []
 
         return figure,success,message
-    
+
     def get_polyline(self, name, proj_elem):
         """Get properties of a defined polyline.
 
@@ -579,15 +579,81 @@ class ProjectionElement(object):
         else:
             return []
 
-    def activate_figure(self, figure_params, status): 
+    def get_geo_tree_element_type(self, figure_type):
+        if figure_type == Figure.POLYLINE:
+            return 1024
+        elif figure_type == Figure.ARC:
+            return 1025
+        elif figure_type == Figure.CIRCLE:
+            return 1025
+        elif figure_type == Figure.OVAL:
+            return 1027
+        elif figure_type == Figure.TEXT:
+            return 1026
+        else:
+            return 0
+
+    def get_figure_type(self, geo_tree_element_type):
+        if geo_tree_element_type == 1024:
+            return Figure.POLYLINE
+        elif geo_tree_element_type == 1025:
+            return Figure.ARC
+        elif geo_tree_element_type == 1027:
+            return Figure.OVAL
+        elif geo_tree_element_type == 1026:
+            return Figure.TEXT
+        else:
+            return -1
+
+
+    def activate_single_figure(self , name, figure_type,status):
+        success = True
+        if figure_type == Figure.POLYLINE:
+            polyline = self.__thrift_client.GetPolyLine(name)
+            if polyline:
+                polyline.activated = status
+                self.__thrift_client.SetPolyLine(polyline)
+        elif figure_type == Figure.CIRCLE:
+            circle = self.__thrift_client.GetCircleSegment(name)
+            if circle:
+                circle.activated = status
+                self.__thrift_client.SetCircleSegment(circle)
+        elif figure_type == Figure.ARC:
+            arc = self.__thrift_client.GetCircleSegment(name)
+            if arc:
+                arc.activated = status
+                self.__thrift_client.SetCircleSegment(arc)
+        elif figure_type == Figure.OVAL:
+            oval = self.__thrift_client.GetOvalSegment(name)
+            if oval:
+                oval.activated = status
+                self.__thrift_client.SetOvalSegment(oval)
+        elif figure_type == Figure.TEXT:
+            text = self.__thrift_client.GetTextElement(name)
+            if text:
+                text.activated = status
+                self.__thrift_client.SetTextElement(text)
+        else:
+            success = False
+            message = "Figure " + name + "does not exist."
+
+        if success and status:
+            message = "Figure " + name + "reactivated."
+        elif success and not status:
+            message = "Figure " + name + "deactivated."
+
+        return success,message
+
+
+    def activate_figure(self, figure_params, status):
         """Hide (deactivate) or unhide (activate hidden) a projection element from the active reference system.
 
         Args:
             figure_params (object): object with the necessary parameters to identify the projection element
             status (bool): true if activate projection element, false otherwise
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is
             an information message string
         """
         try:
@@ -595,45 +661,37 @@ class ProjectionElement(object):
             group       = figure_params.projection_group
             id          = figure_params.figure_name
 
-            name = group + self.figures_list[figure_type] + id
+            if len(id) >0 and len(group)>0 and figure_type>=0:
+                name = group + self.figures_list[figure_type] + id
+                success,message=self.activate_single_figure(name,figure_type,status)
+            else :
 
-            success = True
-            if figure_type == Figure.POLYLINE:
-                polyline = self.__thrift_client.GetPolyLine(name)
-                if polyline:
-                    polyline.activated = status
-                    self.__thrift_client.SetPolyLine(polyline)
-            elif figure_type == Figure.CIRCLE:
-                circle = self.__thrift_client.GetCircleSegment(name)
-                if circle:
-                    circle.activated = status
-                    self.__thrift_client.SetCircleSegment(circle)
-            elif figure_type == Figure.ARC:
-                arc = self.__thrift_client.GetCircleSegment(name)
-                if arc:
-                    arc.activated = status
-                    self.__thrift_client.SetCircleSegment(arc)
-            elif figure_type == Figure.OVAL:
-                oval = self.__thrift_client.GetOvalSegment(name)
-                if oval:
-                    oval.activated = status
-                    self.__thrift_client.SetOvalSegment(oval)
-            elif figure_type == Figure.TEXT:
-                text = self.__thrift_client.GetTextElement(name)
-                if text:
-                    text.activated = status
-                    self.__thrift_client.SetTextElement(text)
-            else:
+                if len(group)>0 and figure_type >=0:
+                    geo_element_type=self.get_geo_tree_element_type(figure_type)
+                    geo_tree_elem_ids= self.__thrift_client.GetGeoTreeIds(group,geo_element_type)
+                elif len(group)>0:
+                    geo_tree_elem_ids= self.__thrift_client.GetGeoTreeIds(group)
+                else:
+                    return False, "No group defined to search"
                 success = False
-                message = "Figure " + name + "does not exist."
+                print("length: ",len(geo_tree_elem_ids))
 
-            if success and status:
-                message = "Figure " + name + "reactivated."
-            elif success and not status:
-                message = "Figure " + name + "deactivated."
+                for geo_tree_elem_id in geo_tree_elem_ids :
+                    figure_type=self.get_figure_type(geo_tree_elem_id.elemType)
+                    success,message=self.activate_single_figure(geo_tree_elem_id.name,figure_type,status)
+                    if not success:
+                        return success, message
+
+
+                if status:
+                    message = "Figures in group " + group + " reactivated."
+                else :
+                    message = "Figures in group " + group + " deactivated."
+
+
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -643,9 +701,9 @@ class ProjectionElement(object):
 
         Args:
             figure_params (object): object with the necessary parameters to identify the projection element
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is
             an information message string
         """
         try:
@@ -658,7 +716,7 @@ class ProjectionElement(object):
             success = True
             message = "Figure removed"
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -671,7 +729,7 @@ class ProjectionElement(object):
             dx (float): offset in x direction
             dy (float): offset in y direction
             dz (float): offset in z direction
-            
+
         Returns:
             tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value
             is an information message string
@@ -690,7 +748,7 @@ class ProjectionElement(object):
             message = "Figure translated"
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -701,9 +759,9 @@ class ProjectionElement(object):
         Args:
             figure_params (object): object with the necessary parameters to identify the projection element
             scale_factor (float): scalation factor of the projection element
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         try:
@@ -720,7 +778,7 @@ class ProjectionElement(object):
             message = "Figure scalated."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -731,9 +789,9 @@ class ProjectionElement(object):
         Args:
             proj_elem_params (object): object with the necessary parameters to identify the projection element
             rotation_angle (float): rotation angle of the projection element [degrees]
-            
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is
             an information message string
         """
         try:
@@ -750,7 +808,7 @@ class ProjectionElement(object):
             message = "Figure rotated."
 
         except Exception as e:
-            success = False 
+            success = False
             message = e
 
         return success,message
@@ -763,7 +821,7 @@ class ProjectionElement(object):
             proj_elem_params (object): object to fill with the projection element properties
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is
             an information message string
         """
 
@@ -773,14 +831,14 @@ class ProjectionElement(object):
         proj_elem_params.position.y  = 0
         proj_elem_params.size[0]     = GeometryTool.vector_point_distance(cs_params.P[1],cs_params.P[0])/2
         proj_elem_params.angle[0]    = 0
-        
+
         success,message = self.define_arrow(cs_params.name,proj_elem_params)
         if not success:
             return success,message
-        
+
         proj_elem_params.figure_name = "axis_y"
         proj_elem_params.angle[0]    = 90
-        
+
         success,message = self.define_arrow(cs_params.name,proj_elem_params)
         if not success:
             return success,message
@@ -798,7 +856,7 @@ class ProjectionElement(object):
             points (list): list of the user system reference points
 
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value is
             an information message string
         """
         proj_elem_params.projection_group = cs_name + "_origin"
@@ -817,11 +875,11 @@ class ProjectionElement(object):
 
         Args:
             cs_name (str): name of coordinate system which the new projection element will be added
-            pointer (object): object with the necessary parameters to identify and define a pointer as a 
+            pointer (object): object with the necessary parameters to identify and define a pointer as a
             new projection figure
-                
+
         Returns:
-            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is 
+            tuple[bool, str]: the first value in the returned tuple is a bool success value and the second value in the tuple is
             an information message string
         """
         pointer.text = "*"
