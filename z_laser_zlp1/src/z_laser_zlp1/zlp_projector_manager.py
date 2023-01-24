@@ -39,11 +39,13 @@ class ZLPProjectorManager(object):
         self.__projector_IP = projector_IP
         self.__server_IP = server_IP
         self.__connection_port = connection_port
-        self.__license_path = lic_path
+#        self.__license_path = lic_path
         self.__projector_id = ""
         self.__active_coord_sys = ""
 
         self.projector_client = ProjectorClient()
+        print("projector_client")
+        self.__license_path = lic_path
 
     def connect_and_setup(self):
         """Prepare projector to be used: connect, load license and activate.
@@ -53,8 +55,11 @@ class ZLPProjectorManager(object):
         """
         try:
             self.client_server_connect()
+            print("client_server_connect()")
             self.activate()
+            print("projector activate()")
             self.load_license(self.__license_path)
+            print("load_license()")
             self.geotree_operator_create()
 
         except Exception as e:
@@ -67,6 +72,7 @@ class ZLPProjectorManager(object):
             ConnectionError
         """
         success,message = self.projector_client.connect(self.__server_IP, self.__connection_port)
+        print("client_server_connect message: ",message)
         if not success:
             raise ConnectionError(message)
 
@@ -111,6 +117,8 @@ class ZLPProjectorManager(object):
             SystemError
         """
         self.__projector_id,success,message = self.projector_client.activate_projector(self.__projector_IP)
+        print("projector activation message: ",message)
+        print("projector IP: ",self.__projector_IP)
         if not success:
             raise SystemError(message)
 
