@@ -53,8 +53,8 @@ class ZLPProjectorManager(object):
         """
         try:
             self.client_server_connect()
-            self.load_license(self.__license_path)
             self.activate()
+            self.load_license(self.__license_path)
             self.geotree_operator_create()
 
         except Exception as e:
