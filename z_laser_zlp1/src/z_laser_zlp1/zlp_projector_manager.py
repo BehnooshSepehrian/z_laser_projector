@@ -39,13 +39,11 @@ class ZLPProjectorManager(object):
         self.__projector_IP = projector_IP
         self.__server_IP = server_IP
         self.__connection_port = connection_port
-#        self.__license_path = lic_path
+        self.__license_path = lic_path
         self.__projector_id = ""
         self.__active_coord_sys = ""
 
         self.projector_client = ProjectorClient()
-        print("projector_client")
-        self.__license_path = lic_path
 
     def connect_and_setup(self):
         """Prepare projector to be used: connect, load license and activate.

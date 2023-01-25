@@ -336,6 +336,7 @@ class ProjectorClient(object):
 
             success = True
             message = "License transfered."
+            print("License message: ", message)
 
         except self.__thrift_client.thrift_interface.CantWriteFile as e:
             success = False
