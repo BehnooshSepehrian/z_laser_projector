@@ -23,10 +23,10 @@ if __name__ == '__main__':
     node_name = 'zlp_node'
     rospy.init_node(node_name)
 
-    projector_IP    = rospy.get_param('projector_IP', "192.168.10.10")
-    server_IP       = rospy.get_param('server_IP', "192.168.10.11")
-    connection_port = rospy.get_param('connection_port', 9090)
-    license_file    = rospy.get_param('license_file', "my_license_file.lic")
+    projector_IP    = rospy.get_param('~projector_IP', "192.168.10.10")
+    server_IP       = rospy.get_param('~server_IP', "192.168.10.11")
+    connection_port = rospy.get_param('~connection_port', 9090)
+    license_file    = rospy.get_param('~license_file', "my_license_file.lic")
 
 
     # define license file path

@@ -62,29 +62,29 @@ class ZLPProjectorROS(object):
 
     def open_services(self):
         """Open ROS services that allow projector device control."""
-        self.connect       = rospy.Service('connect', Trigger, self.connection_cb)
-        self.disconnect    = rospy.Service('disconnect', Trigger, self.disconnection_cb)
-        self.start_proj    = rospy.Service('projection_start', Trigger, self.projection_start_cb)
-        self.stop_proj     = rospy.Service('projection_stop', Trigger, self.projection_stop_cb)
+        self.connect       = rospy.Service('~connect', Trigger, self.connection_cb)
+        self.disconnect    = rospy.Service('~disconnect', Trigger, self.disconnection_cb)
+        self.start_proj    = rospy.Service('~projection_start', Trigger, self.projection_start_cb)
+        self.stop_proj     = rospy.Service('~projection_stop', Trigger, self.projection_stop_cb)
 
-        self.manual_cs     = rospy.Service('define_coordinate_system', CoordinateSystem, self.manual_define_coord_sys_cb)
-        self.auto_cs       = rospy.Service('search_targets', CoordinateSystem, self.auto_search_target_cb)
+        self.manual_cs     = rospy.Service('~define_coordinate_system', CoordinateSystem, self.manual_define_coord_sys_cb)
+        self.auto_cs       = rospy.Service('~search_targets', CoordinateSystem, self.auto_search_target_cb)
 
-        self.get_cs_list   = rospy.Service('coordinate_system_list', CoordinateSystemList, self.get_coord_sys_list_cb)
+        self.get_cs_list   = rospy.Service('~coordinate_system_list', CoordinateSystemList, self.get_coord_sys_list_cb)
 
-        self.set_cs        = rospy.Service('set_coordinate_system', CoordinateSystemName, self.set_coord_sys_cb)
-        self.rem_cs        = rospy.Service('remove_coordinate_system', CoordinateSystemName, self.remove_coord_sys_cb)
-        self.show_cs       = rospy.Service('show_active_coordinate_system', CoordinateSystemShow, self.show_coord_sys_cb)
+        self.set_cs        = rospy.Service('~set_coordinate_system', CoordinateSystemName, self.set_coord_sys_cb)
+        self.rem_cs        = rospy.Service('~remove_coordinate_system', CoordinateSystemName, self.remove_coord_sys_cb)
+        self.show_cs       = rospy.Service('~show_active_coordinate_system', CoordinateSystemShow, self.show_coord_sys_cb)
 
-        self.hide_proj_elem   = rospy.Service('hide_projection_element', ProjectionElement, self.hide_proj_elem_cb)
-        self.unhide_proj_elem = rospy.Service('unhide_projection_element', ProjectionElement, self.unhide_proj_elem_cb)
-        self.remove_proj_elem = rospy.Service('remove_projection_element', ProjectionElement, self.remove_proj_elem_cb)
-        self.monit_proj_elem  = rospy.Service('monitor_projection_element', ProjectionElement, self.keyboard_monitor_proj_elem_cb)
+        self.hide_proj_elem   = rospy.Service('~hide_projection_element', ProjectionElement, self.hide_proj_elem_cb)
+        self.unhide_proj_elem = rospy.Service('~unhide_projection_element', ProjectionElement, self.unhide_proj_elem_cb)
+        self.remove_proj_elem = rospy.Service('~remove_projection_element', ProjectionElement, self.remove_proj_elem_cb)
+        self.monit_proj_elem  = rospy.Service('~monitor_projection_element', ProjectionElement, self.keyboard_monitor_proj_elem_cb)
 
-        self.scan_pointer  = rospy.Service('scan_pointer', Trigger, self.scan_pointer_cb)
+        self.scan_pointer  = rospy.Service('~scan_pointer', Trigger, self.scan_pointer_cb)
 
-        self.add_proj_elem   = rospy.Subscriber("add_projection_element", Figure, self.add_fig_cb)
-        self.add_pointer     = rospy.Subscriber("add_pointer", Figure, self.add_pointer_cb)
+        self.add_proj_elem   = rospy.Subscriber("~add_projection_element", Figure, self.add_fig_cb)
+        self.add_pointer     = rospy.Subscriber("~add_pointer", Figure, self.add_pointer_cb)
 
         rospy.loginfo("Use ROS Services: \n\t\t\trosservice list")
 
