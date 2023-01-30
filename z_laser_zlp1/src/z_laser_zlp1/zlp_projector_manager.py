@@ -53,11 +53,8 @@ class ZLPProjectorManager(object):
         """
         try:
             self.client_server_connect()
-            print("client_server_connect()")
-            self.activate()
-            print("projector activate()")
             self.load_license(self.__license_path)
-            print("load_license()")
+            self.activate()
             self.geotree_operator_create()
 
         except Exception as e:
@@ -70,7 +67,6 @@ class ZLPProjectorManager(object):
             ConnectionError
         """
         success,message = self.projector_client.connect(self.__server_IP, self.__connection_port)
-        print("client_server_connect message: ",message)
         if not success:
             raise ConnectionError(message)
 
@@ -115,8 +111,6 @@ class ZLPProjectorManager(object):
             SystemError
         """
         self.__projector_id,success,message = self.projector_client.activate_projector(self.__projector_IP)
-        print("projector activation message: ",message)
-        print("projector IP: ",self.__projector_IP)
         if not success:
             raise SystemError(message)
 
@@ -155,7 +149,6 @@ class ZLPProjectorManager(object):
 #         * Please make sure that you have an X server running, and that the DISPLAY environment variable is set correctly
         ############################################################
 #        self.keyboard_control = KeyboardControl(self.projector_client,self.projection_element)
-#        print("keyboard_control generated. ")
 
     def start_projection(self):
         """Start projection of elements associated to the active reference system.
