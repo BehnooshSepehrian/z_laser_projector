@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # define license file path
     rospack = rospkg.RosPack()
     pkg_path = rospack.get_path('z_laser_zlp1')
-    license_dir     = rospy.get_param('license_dir', pkg_path + "/lic/")
+    license_dir     = rospy.get_param('~license_dir', pkg_path + "/lic/")
     license_path = license_dir + license_file
     rospy.loginfo("license path: %s",license_path)
 
