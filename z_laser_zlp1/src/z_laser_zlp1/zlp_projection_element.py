@@ -674,7 +674,6 @@ class ProjectionElement(object):
                 else:
                     return False, "No group defined to search"
                 success = False
-                print("length: ",len(geo_tree_elem_ids))
 
                 for geo_tree_elem_id in geo_tree_elem_ids :
                     figure_type=self.get_figure_type(geo_tree_elem_id.elemType)

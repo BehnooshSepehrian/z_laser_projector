@@ -629,7 +629,6 @@ class ZLPProjectorROS(object):
         rospy.set_param('~coordinate_system_name', cs_params.name)
         rospy.set_param('~coordinate_system_distance', cs_params.distance)
         for i in range(4):
-            print("set cs for loop")
             rospy.set_param('~P%d/x' % i, cs_params.P[i].x)
             rospy.set_param('~P%d/y' % i, cs_params.P[i].y)
         rospy.set_param('~T0/x', cs_params.T[0].x)
@@ -644,10 +643,8 @@ class ZLPProjectorROS(object):
         """
         cs_params            = CoordinateSystemParameters()
         cs_params.name       = rospy.get_param('~coordinate_system_name', "default_cs")
-        print("cs name: ",cs_params.name)
         cs_params.distance   = rospy.get_param('~coordinate_system_distance', 1500)
         cs_params.P[0].x     = rospy.get_param('~P0/x', -100)
-        print("cs P[0].x: ",cs_params.P[0].x)
         cs_params.P[0].y     = rospy.get_param('~P0/y', -100)
         cs_params.P[1].x     = rospy.get_param('~P1/x', -100)
         cs_params.P[1].y     = rospy.get_param('~P1/y',  100)
