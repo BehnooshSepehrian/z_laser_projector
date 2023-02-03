@@ -286,7 +286,7 @@ class ZLPProjectorROS(object):
             rospy.logerr(e)
             return CoordinateSystemResponse([], False, str(e))
 
-    def get_coord_sys_list_cb(self, req):
+    def get_coord_sys_list_cb(self):
         """Callback of ROS service to get the list of defined reference systems.
 
         Args:
@@ -635,26 +635,31 @@ class ZLPProjectorROS(object):
         rospy.set_param('~T0/y', cs_params.T[0].y)
         rospy.set_param('~coordinate_system_resolution', cs_params.resolution)
 
-    def read_rosparam_coordinate_system(self):
+    def read_rosparam_coordinate_system(self,cs_name=None):
         """Get parameters of the active reference system from rosparams.
 
         Returns:
             cs_params (object): object with the parameters of the active reference system
         """
         cs_params            = CoordinateSystemParameters()
-        cs_params.name       = rospy.get_param('~coordinate_system_name', "default_cs")
-        cs_params.distance   = rospy.get_param('~coordinate_system_distance', 1500)
-        cs_params.P[0].x     = rospy.get_param('~P0/x', -100)
-        cs_params.P[0].y     = rospy.get_param('~P0/y', -100)
-        cs_params.P[1].x     = rospy.get_param('~P1/x', -100)
-        cs_params.P[1].y     = rospy.get_param('~P1/y',  100)
-        cs_params.P[2].x     = rospy.get_param('~P2/x',  100)
-        cs_params.P[2].y     = rospy.get_param('~P2/y',  100)
-        cs_params.P[3].x     = rospy.get_param('~P3/x',  100)
-        cs_params.P[3].y     = rospy.get_param('~P3/y', -100)
-        cs_params.T[0].x     = rospy.get_param('~T0/x',    0)
-        cs_params.T[0].y     = rospy.get_param('~T0/y',    0)
-        cs_params.resolution = rospy.get_param('~coordinate_system_resolution', 1000)
+
+        if cs_name is not None:
+            subname = "~" + cs_name + "/"
+        else:
+            subname = "~"
+        cs_params.name       = rospy.get_param(subname + 'coordinate_system_name', "default_cs")
+        cs_params.distance   = rospy.get_param(subname + 'coordinate_system_distance', 1500)
+        cs_params.P[0].x     = rospy.get_param(subname + 'P0/x', -100)
+        cs_params.P[0].y     = rospy.get_param(subname + 'P0/y', -100)
+        cs_params.P[1].x     = rospy.get_param(subname + 'P1/x', -100)
+        cs_params.P[1].y     = rospy.get_param(subname + 'P1/y',  100)
+        cs_params.P[2].x     = rospy.get_param(subname + 'P2/x',  100)
+        cs_params.P[2].y     = rospy.get_param(subname + 'P2/y',  100)
+        cs_params.P[3].x     = rospy.get_param(subname + 'P3/x',  100)
+        cs_params.P[3].y     = rospy.get_param(subname + 'P3/y', -100)
+        cs_params.T[0].x     = rospy.get_param(subname + 'T0/x',    0)
+        cs_params.T[0].y     = rospy.get_param(subname + 'T0/y',    0)
+        cs_params.resolution = rospy.get_param(subname + 'coordinate_system_resolution', 1000)
         return cs_params
 
     def setup_projector(self):
@@ -674,9 +679,9 @@ class ZLPProjectorROS(object):
             rospy.logerr(e)
             return True
 
-    def initialize_coordinate_system(self):
+    def initialize_coordinate_system(self,cs_name=None):
         """Initial projector setup with the factory or an user predefined reference system from configuration files."""
-        params = self.read_rosparam_coordinate_system()
+        params = self.read_rosparam_coordinate_system(cs_name)
         try:
             self.projector.define_coordinate_system(params, False)
 
