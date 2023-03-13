@@ -631,8 +631,11 @@ class ZLPProjectorROS(object):
         for i in range(4):
             rospy.set_param('~P%d/x' % i, cs_params.P[i].x)
             rospy.set_param('~P%d/y' % i, cs_params.P[i].y)
-        rospy.set_param('~T0/x', cs_params.T[0].x)
-        rospy.set_param('~T0/y', cs_params.T[0].y)
+        for i in range(4):
+            rospy.set_param('~T%d/x' % i, cs_params.T[i].x)
+            rospy.set_param('~T%d/y' % i, cs_params.T[i].y)
+            rospy.set_param('~T%d/z' % i, cs_params.T[i].z)
+        
         rospy.set_param('~coordinate_system_resolution', cs_params.resolution)
 
     def read_rosparam_coordinate_system(self,cs_name=None):
