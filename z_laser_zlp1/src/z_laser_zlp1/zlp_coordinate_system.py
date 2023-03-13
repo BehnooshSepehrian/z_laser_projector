@@ -438,9 +438,9 @@ class CoordinateSystem(object):
                 cs_params.T[i].z = cs_ref_obj.refPointList[i].refPoint.z
                 print("cs_ref_obj.refPointList["+str(i)+"].tracePoint.x",cs_ref_obj.refPointList[i].tracePoint.x)
                 print("cs_ref_obj.refPointList["+str(i)+"].tracePoint.y",cs_ref_obj.refPointList[i].tracePoint.y)
-                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.x",cs_ref_obj.refPointList[i].tracePoint.x)
-                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.y",cs_ref_obj.refPointList[i].tracePoint.y)
-                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.z",cs_ref_obj.refPointList[i].tracePoint.z)
+                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.x",cs_ref_obj.refPointList[i].refPoint.x)
+                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.y",cs_ref_obj.refPointList[i].refPoint.y)
+                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.z",cs_ref_obj.refPointList[i].refPoint.z)
                 print("cs_ref_obj.refPointList["+str(i)+"].distance",cs_ref_obj.refPointList[i].distance)
             
             success = True
