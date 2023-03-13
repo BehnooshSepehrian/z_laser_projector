@@ -75,6 +75,7 @@ def get_dxf_line_params(elem, file_name, id):
     proj_elem_params.figure_name      = "line_" + str(id)
     proj_elem_params.position.x       = elem.dxf.start.x
     proj_elem_params.position.y       = elem.dxf.start.y
+    proj_elem_params.position.z       = elem.dxf.start.z
     proj_elem_params.size[0]          = GeometryTool.vector_point_distance(elem.dxf.start, elem.dxf.end)
     proj_elem_params.angle[0]         = GeometryTool.vector_point_angle(elem.dxf.start, elem.dxf.end)
 
@@ -97,6 +98,7 @@ def get_dxf_circle_params(elem, file_name, id):
     proj_elem_params.figure_name      = "circle_" + str(id)
     proj_elem_params.position.x       = elem.dxf.center.x
     proj_elem_params.position.y       = elem.dxf.center.y
+    proj_elem_params.position.z       = elem.dxf.center.z
     proj_elem_params.size[0]          = elem.dxf.radius
 
     return proj_elem_params.to_figure()
@@ -118,6 +120,7 @@ def get_dxf_arc_params(elem, file_name, id):
     proj_elem_params.figure_name      = "arc_" + str(id)
     proj_elem_params.position.x       = elem.dxf.center.x
     proj_elem_params.position.y       = elem.dxf.center.y
+    proj_elem_params.position.z       = elem.dxf.center.z
     proj_elem_params.size[0]          = elem.dxf.radius
     proj_elem_params.angle[0]         = elem.dxf.start_angle 
     proj_elem_params.angle[1]         = elem.dxf.end_angle
@@ -141,6 +144,7 @@ def get_dxf_ellipse_params(elem, file_name, id):
     proj_elem_params.figure_name      = "oval_" + str(id)
     proj_elem_params.position.x       = elem.dxf.center.x
     proj_elem_params.position.y       = elem.dxf.center.y
+    proj_elem_params.position.z       = elem.dxf.center.z
     proj_elem_params.size[0]          = GeometryTool.vector_point_distance(Point(0,0,0), elem.dxf.major_axis)
     proj_elem_params.size[1]          = elem.dxf.ratio * proj_elem_params.size[0]
     proj_elem_params.angle[0]         = GeometryTool.vector_point_angle(Point(0,0,0), elem.dxf.major_axis)
@@ -164,6 +168,7 @@ def get_dxf_text_params(elem, file_name, id):
     proj_elem_params.figure_name      = "text_" + str(id)
     proj_elem_params.position.x       = elem.dxf.insert.x - elem.dxf.height*math.sin(math.radians(elem.dxf.rotation))
     proj_elem_params.position.y       = elem.dxf.insert.y + elem.dxf.height*math.cos(math.radians(elem.dxf.rotation))
+    proj_elem_params.position.z       = elem.dxf.insert.z + elem.dxf.height*math.cos(math.radians(elem.dxf.rotation))
     proj_elem_params.size[0]          = elem.dxf.height
     proj_elem_params.angle[0]         = elem.dxf.rotation
     proj_elem_params.text             = elem.dxf.text
