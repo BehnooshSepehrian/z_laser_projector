@@ -699,6 +699,8 @@ class ZLPProjectorROS(object):
             self.projector.define_coordinate_system(params, False)
 
             cs = self.projector.get_coordinate_system_params(params.name)
+            print("coordinate system",cs)
+
             self.projector.cs_frame_create(cs)
             self.projector.cs_axes_create(cs)
             rospy.loginfo("Coordinate System [{}] loaded".format(params.name))
