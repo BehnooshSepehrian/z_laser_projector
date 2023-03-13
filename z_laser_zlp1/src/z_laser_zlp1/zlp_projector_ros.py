@@ -659,6 +659,16 @@ class ZLPProjectorROS(object):
         cs_params.P[3].y     = rospy.get_param(subname + 'P3/y', -100)
         cs_params.T[0].x     = rospy.get_param(subname + 'T0/x',    0)
         cs_params.T[0].y     = rospy.get_param(subname + 'T0/y',    0)
+        cs_params.T[0].z     = rospy.get_param(subname + 'T0/z',    0)
+        cs_params.T[1].x     = rospy.get_param(subname + 'T1/x',    0)
+        cs_params.T[1].y     = rospy.get_param(subname + 'T1/y',    0)
+        cs_params.T[1].z     = rospy.get_param(subname + 'T1/z',    0)
+        cs_params.T[2].x     = rospy.get_param(subname + 'T2/x',    0)
+        cs_params.T[2].y     = rospy.get_param(subname + 'T2/y',    0)
+        cs_params.T[2].z     = rospy.get_param(subname + 'T2/z',    0)
+        cs_params.T[3].x     = rospy.get_param(subname + 'T3/x',    0)
+        cs_params.T[3].y     = rospy.get_param(subname + 'T3/y',    0)
+        cs_params.T[3].z     = rospy.get_param(subname + 'T3/z',    0)
         cs_params.resolution = rospy.get_param(subname + 'coordinate_system_resolution', 1000)
         return cs_params
 

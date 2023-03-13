@@ -125,10 +125,10 @@ class CoordinateSystem(object):
             size_horiz = cs.P[1].x - cs.P[0].x
             size_vert  = cs.P[3].y - cs.P[0].y
 
-            T = UserT(cs.T[0].x, cs.T[0].y, resolution, size_horiz, size_vert).T
+            # T = UserT(cs.T[0].x, cs.T[0].y, resolution, size_horiz, size_vert).T
 
             for i in range(4):
-                reference_object.refPointList.append(self.create_reference_point("T"+str(i), T[i].x, T[i].y))
+                reference_object.refPointList.append(self.create_reference_point("T"+str(i), cs.T[i].x, cs.T[i].y, cs.T[i].z))
 
             for i in range(4):
                 reference_object = self.__define_reference_point(reference_object, cross_size, i, d, cs.P[i].x, cs.P[i].y)
