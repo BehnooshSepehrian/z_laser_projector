@@ -426,6 +426,8 @@ class CoordinateSystem(object):
             cs_ref_obj         = self.__thrift_client.GetReferenceobject(cs_name)
 
             cs_params.name     = cs_ref_obj.coordinateSystem
+            print("coordinate system name : ",cs_params.name )
+            print(cs_ref_obj.fieldTransMat)
             cs_params.distance = cs_ref_obj.refPointList[0].distance
             for i in range(4):
                 cs_params.P[i].x = cs_ref_obj.refPointList[i].tracePoint.x
