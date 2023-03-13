@@ -432,7 +432,7 @@ class CoordinateSystem(object):
                 cs_params.P[i].y = cs_ref_obj.refPointList[i].tracePoint.y
                 cs_params.T[i].x = cs_ref_obj.refPointList[i].refPoint.x
                 cs_params.T[i].y = cs_ref_obj.refPointList[i].refPoint.y
-                cs_params.T[i].z = cs_params.distance
+                cs_params.T[i].z = cs_ref_obj.refPointList[i].refPoint.z
             
             success = True
             message = "[" + cs_name + "] coordinate system params returned."
