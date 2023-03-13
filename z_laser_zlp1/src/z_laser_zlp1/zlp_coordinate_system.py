@@ -94,6 +94,9 @@ class CoordinateSystem(object):
         ref_point = self.__thrift_client.thrift_interface.Referencepoint()
         ref_point.name = name
         ref_point.refPoint = self.__geometry_tool.create_3d_point(x, y, z)
+        print("x: ",x)
+        print("y: ",y)
+        print("z: ",z)
         ref_point.activated = active
         ref_point.tracePoint = self.__geometry_tool.create_2d_point()
         ref_point.crossSize = self.__geometry_tool.create_2d_point()
