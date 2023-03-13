@@ -436,12 +436,12 @@ class CoordinateSystem(object):
                 cs_params.T[i].x = cs_ref_obj.refPointList[i].refPoint.x
                 cs_params.T[i].y = cs_ref_obj.refPointList[i].refPoint.y
                 cs_params.T[i].z = cs_ref_obj.refPointList[i].refPoint.z
-                print("cs_ref_obj.refPointList["+i+"].tracePoint.x",cs_ref_obj.refPointList[i].tracePoint.x)
-                print("cs_ref_obj.refPointList["+i+"].tracePoint.y",cs_ref_obj.refPointList[i].tracePoint.y)
-                print("cs_ref_obj.refPointList["+i+"].refPoint.x",cs_ref_obj.refPointList[i].tracePoint.x)
-                print("cs_ref_obj.refPointList["+i+"].refPoint.y",cs_ref_obj.refPointList[i].tracePoint.y)
-                print("cs_ref_obj.refPointList["+i+"].refPoint.z",cs_ref_obj.refPointList[i].tracePoint.z)
-                print("cs_ref_obj.refPointList["+i+"].distance",cs_ref_obj.refPointList[i].distance)
+                print("cs_ref_obj.refPointList["+str(i)+"].tracePoint.x",cs_ref_obj.refPointList[i].tracePoint.x)
+                print("cs_ref_obj.refPointList["+str(i)+"].tracePoint.y",cs_ref_obj.refPointList[i].tracePoint.y)
+                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.x",cs_ref_obj.refPointList[i].tracePoint.x)
+                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.y",cs_ref_obj.refPointList[i].tracePoint.y)
+                print("cs_ref_obj.refPointList["+str(i)+"].refPoint.z",cs_ref_obj.refPointList[i].tracePoint.z)
+                print("cs_ref_obj.refPointList["+str(i)+"].distance",cs_ref_obj.refPointList[i].distance)
             
             success = True
             message = "[" + cs_name + "] coordinate system params returned."
