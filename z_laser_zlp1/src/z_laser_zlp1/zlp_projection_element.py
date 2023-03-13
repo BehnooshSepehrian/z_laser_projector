@@ -97,15 +97,18 @@ class ProjectionElement(object):
             id     = proj_elem_params.figure_name
             x      = proj_elem_params.position.x
             y      = proj_elem_params.position.y
-            angle  = proj_elem_params.angle[0]
-            length = proj_elem_params.size[0]
+            z      = proj_elem_params.position.z
+            angle_y  = proj_elem_params.angle[0]
+            length_y = proj_elem_params.size[0]
+            angle_z  = proj_elem_params.angle[1]
+            length_z = proj_elem_params.size[1]
             figure_type  = proj_elem_params.figure_type
 
             polyline_name = group + self.figures_list[figure_type] + id
             polyline = self.create_polyline(polyline_name)
 
-            linestring = [ self.__geometry_tool.create_3d_point(x, y),
-                           self.__geometry_tool.create_3d_point(x+length*cos(angle*pi/180), y+length*sin(angle*pi/180))]
+            linestring = [ self.__geometry_tool.create_3d_point(x, y,z),
+                           self.__geometry_tool.create_3d_point(x+length_y*cos(angle_y*pi/180), y+length_y*sin(angle_y*pi/180), z+length_z*sin(angle_z*pi/180))]
 
             polyline.polylineList = [linestring]
             polyline.activated = True
@@ -485,13 +488,18 @@ class ProjectionElement(object):
             start_point = polyline.polylineList[0][0]
             end_point = polyline.polylineList[0][1]
 
-            angle = GeometryTool.vector_point_angle(start_point, end_point)
-            length = GeometryTool.vector_point_distance(start_point, end_point)
+            angle_y = GeometryTool.vector_point_angle(start_point, end_point)
+            length_y = GeometryTool.vector_point_distance(start_point, end_point)
+
+            angle_z = GeometryTool.vector_point_angle_z(start_point, end_point)
+            length_z = GeometryTool.vector_point_distance_z(start_point, end_point)
 
             proj_elem.position.x = start_point.x
             proj_elem.position.y = start_point.y
-            proj_elem.angle[0]   = angle
-            proj_elem.size[0]    = length
+            proj_elem.angle[0]   = angle_y
+            proj_elem.size[0]    = length_y
+            proj_elem.angle[1]   = angle_z
+            proj_elem.size[1]    = length_z
             return proj_elem
         else:
             return []

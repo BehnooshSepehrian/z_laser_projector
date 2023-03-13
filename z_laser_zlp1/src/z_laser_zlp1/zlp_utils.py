@@ -213,7 +213,19 @@ class GeometryTool(object):
             float: euclidean distance between point1 and point2
         """
         return distance.euclidean((point1.x, point1.y), (point2.x, point2.y))
+    @staticmethod
+    def vector_point_distance_z(point1, point2):
+        """Return the euclidean distance between 2 points.
 
+        Args:
+            point1 (list): x,y,z position of the first point
+            point2 (list): x,y,z position of the second point
+
+        Returns:
+            float: euclidean distance between point1 and point2
+        """
+        return distance.euclidean((point1.x, point1.z), (point2.x, point2.z))
+   
     @staticmethod
     def vector_point_angle(point1, point2):
         """Angle of the vector consisting in two points, regards to the horizontal 0 degrees.
@@ -226,3 +238,15 @@ class GeometryTool(object):
             float: vector angle regards to the horizontal 0 degrees
         """
         return 180/math.pi*math.atan2((point2.y-point1.y), (point2.x-point1.x))
+    @staticmethod
+    def vector_point_angle_z(point1, point2):
+        """Angle of the vector consisting in two points, regards to the horizontal 0 degrees.
+
+        Args:
+            point1 (list): x,y,z position of the first point of the vector
+            point2 (list): x,y,z position of the second point of the vector
+
+        Returns:
+            float: vector angle regards to the horizontal 0 degrees
+        """
+        return 180/math.pi*math.atan2((point2.z-point1.z), (point2.x-point1.x))
